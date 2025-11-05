@@ -1,9 +1,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "lista.h"
+#include "linked_list.h"
 
-/* Retorna o nome da categoria baseado no enum */
+// da o nome da  ategoria com base no enum
 const char* obterNomeCategoria(CategoriaAlimento cat) {
     const char* nomes[] = {
         "Cereais e derivados",
@@ -25,7 +25,7 @@ const char* obterNomeCategoria(CategoriaAlimento cat) {
     return nomes[cat];
 }
 
-/* Cria um novo nó de categoria */
+// cria novo nó de categoria
 NoCategoria* criarNoCategoria(CategoriaAlimento cat, const char* nome) {
     NoCategoria* novo = (NoCategoria*)malloc(sizeof(NoCategoria));
     if (novo == NULL) {
@@ -44,29 +44,29 @@ NoCategoria* criarNoCategoria(CategoriaAlimento cat, const char* nome) {
     return novo;
 }
 
-/* Insere uma categoria na lista mantendo ordem alfabética */
+// insere nova categoria na lista, confere e coloca em ordem alfabetica
 void inserirCategoriaOrdenada(NoCategoria** lista, NoCategoria* novo) {
     NoCategoria* atual = *lista;
     NoCategoria* anterior = NULL;
     
-    /* Encontra a posição correta para inserção */
+    // procura posição correta na ordem alfabética
     while (atual != NULL && strcmp(novo->nome, atual->nome) > 0) {
         anterior = atual;
         atual = atual->proximo;
     }
     
-    /* Insere no início */
+    // coloca no inicio
     if (anterior == NULL) {
         novo->proximo = *lista;
         *lista = novo;
     } else {
-        /* Insere no meio ou fim */
+        // coloca no meio ou no final
         novo->proximo = atual;
         anterior->proximo = novo;
     }
 }
 
-/* Busca uma categoria na lista */
+// busca categoria especifica na lista
 NoCategoria* buscarCategoria(NoCategoria* lista, CategoriaAlimento cat) {
     NoCategoria* atual = lista;
     
@@ -80,7 +80,7 @@ NoCategoria* buscarCategoria(NoCategoria* lista, CategoriaAlimento cat) {
     return NULL;
 }
 
-/* Remove uma categoria da lista */
+// remove categoria da lista
 void removerCategoria(NoCategoria** lista, CategoriaAlimento cat) {
     NoCategoria* atual = *lista;
     NoCategoria* anterior = NULL;
@@ -102,7 +102,7 @@ void removerCategoria(NoCategoria** lista, CategoriaAlimento cat) {
     }
 }
 
-/* Libera toda a lista de categorias */
+// libera a lista inteira
 void liberarListaCategorias(NoCategoria* lista) {
     NoCategoria* atual = lista;
     NoCategoria* temp;
@@ -115,7 +115,7 @@ void liberarListaCategorias(NoCategoria* lista) {
     }
 }
 
-/* Cria um novo nó de alimento */
+// cria novo nó de alimento
 NoAlimento* criarNoAlimento(Alimento* alimento) {
     NoAlimento* novo = (NoAlimento*)malloc(sizeof(NoAlimento));
     if (novo == NULL) {
@@ -129,29 +129,29 @@ NoAlimento* criarNoAlimento(Alimento* alimento) {
     return novo;
 }
 
-/* Insere um alimento na lista mantendo ordem alfabética */
+// insere alimentos na lista - na ordem alfabética
 void inserirAlimentoOrdenado(NoAlimento** lista, NoAlimento* novo) {
     NoAlimento* atual = *lista;
     NoAlimento* anterior = NULL;
     
-    /* Encontra a posição correta para inserção */
+    // encontra a posição certa da ordem alfabetica para inserir
     while (atual != NULL && strcmp(novo->alimento->descricao, atual->alimento->descricao) > 0) {
         anterior = atual;
         atual = atual->proximo;
     }
     
-    /* Insere no início */
+    // insere no inicio
     if (anterior == NULL) {
         novo->proximo = *lista;
         *lista = novo;
     } else {
-        /* Insere no meio ou fim */
+        // insere no meio ou no fim
         novo->proximo = atual;
         anterior->proximo = novo;
     }
 }
 
-/* Remove um alimento da lista */
+// remove alimento da lista
 void removerAlimento(NoAlimento** lista, int numeroAlimento) {
     NoAlimento* atual = *lista;
     NoAlimento* anterior = NULL;
@@ -173,7 +173,7 @@ void removerAlimento(NoAlimento** lista, int numeroAlimento) {
     }
 }
 
-/* Libera toda a lista de alimentos */
+// libera a lista inteira de alimentos
 void liberarListaAlimentos(NoAlimento* lista) {
     NoAlimento* atual = lista;
     NoAlimento* temp;

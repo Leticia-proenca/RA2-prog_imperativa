@@ -3,8 +3,8 @@
 #include <string.h>
 #include "ler_arquivo.h"
 
-/* Lê dados do arquivo CSV e retorna o número de alimentos lidos */
-int lerCSV(const char* nomeArquivo, Alimento** alimentos) {
+// le o csv
+void lerCSV(const char* nomeArquivo, Alimento** alimentos, int* numAlimentos) {
     FILE* arquivo = fopen(nomeArquivo, "r");
     if (arquivo == NULL) {
         fprintf(stderr, "Erro ao abrir arquivo %s\n", nomeArquivo);
@@ -23,23 +23,23 @@ int lerCSV(const char* nomeArquivo, Alimento** alimentos) {
     char linha[500];
     int categoria;
     
-    /* Pula o cabeçalho se existir */
+    // pula cabeçalho
     if (fgets(linha, sizeof(linha), arquivo) != NULL) {
-        /* Verifica se é cabeçalho (contém letras) */
+        // verifica se o cabeçalho tem letra
         if (linha[0] < '0' || linha[0] > '9') {
-            /* Era cabeçalho, não faz nada */
+            // se tinha cabeçalho então não faz nada
         } else {
-            /* Não era cabeçalho, processa a linha */
+            // se não tinha cabeçalho então volta - faz rewind
             rewind(arquivo);
         }
     }
     
     while (fgets(linha, sizeof(linha), arquivo) != NULL) {
-        /* Remove quebra de linha */
+        // remove quebra linha
         linha[strcspn(linha, "\n")] = '\0';
         linha[strcspn(linha, "\r")] = '\0';
         
-        /* Realoca se necessário */
+        // realoca se necessario
         if (contador >= capacidade) {
             capacidade *= 2;
             *alimentos = (Alimento*)realloc(*alimentos, capacidade * sizeof(Alimento));
@@ -50,7 +50,7 @@ int lerCSV(const char* nomeArquivo, Alimento** alimentos) {
             }
         }
         
-        /* Parse da linha CSV */
+        // pega as info linha por linha 
         if (sscanf(linha, "%d,%[^,],%f,%f,%d",
                 &(*alimentos)[contador].numero,
                 (*alimentos)[contador].descricao,
@@ -64,10 +64,10 @@ int lerCSV(const char* nomeArquivo, Alimento** alimentos) {
     }
     
     fclose(arquivo);
-    return contador;
+    *numAlimentos = contador;
 }
 
-/* Escreve dados em arquivo binário */
+// transcreve os dados para bin
 void escreverBinario(const char* nomeArquivo, Alimento* alimentos, int numAlimentos) {
     FILE* arquivo = fopen(nomeArquivo, "wb");
     if (arquivo == NULL) {
@@ -75,43 +75,41 @@ void escreverBinario(const char* nomeArquivo, Alimento* alimentos, int numAlimen
         exit(1);
     }
     
-    /* Escreve o número de alimentos */
+    // escreve o numero de alimentos
     fwrite(&numAlimentos, sizeof(int), 1, arquivo);
     
-    /* Escreve todos os alimentos */
+    // escreve todos os alimentos
     fwrite(alimentos, sizeof(Alimento), numAlimentos, arquivo);
     
     fclose(arquivo);
     printf("Arquivo binário criado com sucesso: %d alimentos salvos.\n", numAlimentos);
 }
 
-/* Lê dados do arquivo binário e retorna o número de alimentos lidos */
-int lerBinario(const char* nomeArquivo, Alimento** alimentos) {
+// le o bin
+void lerBinario(const char* nomeArquivo, Alimento** alimentos, int* numAlimentos) {
     FILE* arquivo = fopen(nomeArquivo, "rb");
     if (arquivo == NULL) {
         fprintf(stderr, "Erro ao abrir arquivo %s\n", nomeArquivo);
         exit(1);
     }
     
-    int numAlimentos;
-    
-    /* Lê o número de alimentos */
-    if (fread(&numAlimentos, sizeof(int), 1, arquivo) != 1) {
+    // le numero de alimentos, importante para o funcionamento do arquivo P1
+    if (fread(numAlimentos, sizeof(int), 1, arquivo) != 1) {
         fprintf(stderr, "Erro ao ler número de alimentos\n");
         fclose(arquivo);
         exit(1);
     }
     
-    /* Aloca memória para os alimentos */
-    *alimentos = (Alimento*)malloc(numAlimentos * sizeof(Alimento));
+    // aloca memória para os alimenotos
+    *alimentos = (Alimento*)malloc(*numAlimentos * sizeof(Alimento));
     if (*alimentos == NULL) {
         fprintf(stderr, "Erro ao alocar memória\n");
         fclose(arquivo);
         exit(1);
     }
     
-    /* Lê todos os alimentos */
-    if (fread(*alimentos, sizeof(Alimento), numAlimentos, arquivo) != (size_t)numAlimentos) {
+    // le os alimentos
+    if (fread(*alimentos, sizeof(Alimento), *numAlimentos, arquivo) != (size_t)(*numAlimentos)) {
         fprintf(stderr, "Erro ao ler dados dos alimentos\n");
         free(*alimentos);
         fclose(arquivo);
@@ -119,5 +117,4 @@ int lerBinario(const char* nomeArquivo, Alimento** alimentos) {
     }
     
     fclose(arquivo);
-    return numAlimentos;
 }

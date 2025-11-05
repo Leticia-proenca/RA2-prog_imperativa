@@ -2,22 +2,22 @@
 #include <stdlib.h>
 #include <string.h>
 #include "ler_arquivo.h"
-#include "lista.h"
+#include "linked_list.h"
 #include "arvore_binaria.h"
 
-/* Variável global para controlar se houve modificação */
+// variavel para o controle de modificações
 static int dadosModificados = 0;
 
-/* Função para construir as estruturas de dados a partir do array de alimentos */
+// constroi as estruturas de dados a partir do array de alimentos 
 NoCategoria* construirEstruturas(Alimento* alimentos, int numAlimentos) {
     NoCategoria* listaCategorias = NULL;
     int i;
     
-    /* Para cada alimento, insere na estrutura apropriada */
+    // para cada alimento, insere na estrutura certa
     for (i = 0; i < numAlimentos; i++) {
         CategoriaAlimento cat = alimentos[i].categoria;
         
-        /* Busca ou cria a categoria */
+        // busca ou cria a categoria
         NoCategoria* noCategoria = buscarCategoria(listaCategorias, cat);
         if (noCategoria == NULL) {
             const char* nomeCategoria = obterNomeCategoria(cat);
@@ -25,7 +25,7 @@ NoCategoria* construirEstruturas(Alimento* alimentos, int numAlimentos) {
             inserirCategoriaOrdenada(&listaCategorias, noCategoria);
         }
         
-        /* Cria cópia do alimento e insere na lista */
+        // faz copia do alimento e coloca no array
         Alimento* copiaAlimento = (Alimento*)malloc(sizeof(Alimento));
         if (copiaAlimento == NULL) {
             fprintf(stderr, "Erro ao alocar memória para alimento\n");
@@ -37,7 +37,7 @@ NoCategoria* construirEstruturas(Alimento* alimentos, int numAlimentos) {
         inserirAlimentoOrdenado(&noCategoria->listaAlimentos, noAlimento);
     }
     
-    /* Constrói as árvores para cada categoria */
+    // controi arvore para cada categoria
     NoCategoria* atual = listaCategorias;
     while (atual != NULL) {
         atual->arvoreEnergia = construirArvoreEnergia(atual->listaAlimentos);
@@ -48,7 +48,7 @@ NoCategoria* construirEstruturas(Alimento* alimentos, int numAlimentos) {
     return listaCategorias;
 }
 
-/* Lista todas as categorias */
+// lista todas as categorias
 void listarCategorias(NoCategoria* listaCategorias) {
     NoCategoria* atual = listaCategorias;
     int contador = 1;
@@ -62,7 +62,7 @@ void listarCategorias(NoCategoria* listaCategorias) {
     printf("\n");
 }
 
-/* Lista todos os alimentos de uma categoria */
+// lista todos os limenots de uma categoria
 void listarAlimentosCategoria(NoCategoria* categoria) {
     NoAlimento* atual = categoria->listaAlimentos;
     
@@ -78,21 +78,21 @@ void listarAlimentosCategoria(NoCategoria* categoria) {
     printf("\n");
 }
 
-/* Lista alimentos por energia (ordem decrescente) */
+// lista em ordem decrescente de energia os alimentos
 void listarPorEnergia(NoCategoria* categoria) {
     printf("\n=== ALIMENTOS POR ENERGIA (DECRESCENTE): %s ===\n", categoria->nome);
     percorrerDecrescente((NoArvore*)categoria->arvoreEnergia);
     printf("\n");
 }
 
-/* Lista alimentos por proteína (ordem decrescente) */
+// lista em ordem decrescente de proteina os alimentos
 void listarPorProteina(NoCategoria* categoria) {
     printf("\n=== ALIMENTOS POR PROTEÍNA (DECRESCENTE): %s ===\n", categoria->nome);
     percorrerDecrescente((NoArvore*)categoria->arvoreProteina);
     printf("\n");
 }
 
-/* Lista alimentos com energia no intervalo */
+// lista os alimentos com valores de energia dentro de um determinado intervalo
 void listarEnergiaIntervalo(NoCategoria* categoria, float min, float max) {
     printf("\n=== ALIMENTOS COM ENERGIA ENTRE %.2f e %.2f kcal: %s ===\n", 
         min, max, categoria->nome);
@@ -100,7 +100,7 @@ void listarEnergiaIntervalo(NoCategoria* categoria, float min, float max) {
     printf("\n");
 }
 
-/* Lista alimentos com proteína no intervalo */
+// lista os laimenots com valores de porteina dentro de um determinado intervalo
 void listarProteinaIntervalo(NoCategoria* categoria, float min, float max) {
     printf("\n=== ALIMENTOS COM PROTEÍNA ENTRE %.2f e %.2f g: %s ===\n", 
         min, max, categoria->nome);
@@ -108,7 +108,7 @@ void listarProteinaIntervalo(NoCategoria* categoria, float min, float max) {
     printf("\n");
 }
 
-/* Escolhe uma categoria */
+// escolhe uma categoria
 NoCategoria* escolherCategoria(NoCategoria* listaCategorias) {
     int opcao;
     NoCategoria* atual = listaCategorias;
@@ -117,12 +117,12 @@ NoCategoria* escolherCategoria(NoCategoria* listaCategorias) {
     listarCategorias(listaCategorias);
     printf("Escolha o número da categoria: ");
     if (scanf("%d", &opcao) != 1) {
-        while (getchar() != '\n') {} /* Limpa buffer */
+        while (getchar() != '\n') {} // Limpa buffer 
         return NULL;
     }
-    while (getchar() != '\n') {} /* Limpa buffer */
+    while (getchar() != '\n') {} // Limpa buffer 
     
-    /* Encontra a categoria selecionada */
+    // encontra a categoria escolhida
     while (atual != NULL && contador < opcao) {
         contador++;
         atual = atual->proximo;
@@ -131,7 +131,7 @@ NoCategoria* escolherCategoria(NoCategoria* listaCategorias) {
     return atual;
 }
 
-/* Remove uma categoria */
+// remove uma categoria
 void removerCategoriaMenu(NoCategoria** listaCategorias) {
     NoCategoria* categoria = escolherCategoria(*listaCategorias);
     
@@ -145,7 +145,7 @@ void removerCategoriaMenu(NoCategoria** listaCategorias) {
     strncpy(nome, categoria->nome, 99);
     nome[99] = '\0';
     
-    /* Libera as árvores antes de remover */
+    // libera as arvores antes de deletar
     liberarArvore((NoArvore*)categoria->arvoreEnergia);
     liberarArvore((NoArvore*)categoria->arvoreProteina);
     categoria->arvoreEnergia = NULL;
@@ -157,7 +157,7 @@ void removerCategoriaMenu(NoCategoria** listaCategorias) {
     printf("Categoria '%s' removida com sucesso!\n", nome);
 }
 
-/* Remove um alimento */
+// remove alimento
 void removerAlimentoMenu(NoCategoria* listaCategorias) {
     NoCategoria* categoria = escolherCategoria(listaCategorias);
     int numeroAlimento;
@@ -170,15 +170,15 @@ void removerAlimentoMenu(NoCategoria* listaCategorias) {
     listarAlimentosCategoria(categoria);
     printf("Digite o número do alimento a remover: ");
     if (scanf("%d", &numeroAlimento) != 1) {
-        while (getchar() != '\n') {} /* Limpa buffer */
+        while (getchar() != '\n') {} // Limpa buffer 
         printf("Número inválido!\n");
         return;
     }
-    while (getchar() != '\n') {} /* Limpa buffer */
+    while (getchar() != '\n') {} // Limpa buffer 
     
     removerAlimento(&categoria->listaAlimentos, numeroAlimento);
     
-    /* Reconstrói as árvores */
+    // refaz as arvores - atualiza
     liberarArvore((NoArvore*)categoria->arvoreEnergia);
     liberarArvore((NoArvore*)categoria->arvoreProteina);
     categoria->arvoreEnergia = construirArvoreEnergia(categoria->listaAlimentos);
@@ -188,7 +188,7 @@ void removerAlimentoMenu(NoCategoria* listaCategorias) {
     printf("Alimento removido com sucesso!\n");
 }
 
-/* Salva dados atualizados em arquivo binário */
+// salva os novos dados no bin
 void salvarDadosAtualizados(NoCategoria* listaCategorias) {
     int numAlimentos = 0;
     NoCategoria* catAtual;
@@ -196,7 +196,7 @@ void salvarDadosAtualizados(NoCategoria* listaCategorias) {
     Alimento* arrayAlimentos;
     int indice;
     
-    /* Conta total de alimentos */
+    // conta total de alimentos
     catAtual = listaCategorias;
     while (catAtual != NULL) {
         alimAtual = catAtual->listaAlimentos;
@@ -207,14 +207,14 @@ void salvarDadosAtualizados(NoCategoria* listaCategorias) {
         catAtual = catAtual->proximo;
     }
     
-    /* Aloca array */
+    // aloca array
     arrayAlimentos = (Alimento*)malloc(numAlimentos * sizeof(Alimento));
     if (arrayAlimentos == NULL) {
         fprintf(stderr, "Erro ao alocar memória\n");
         exit(1);
     }
     
-    /* Copia dados para o array */
+    // copia os dados e coloca no array
     indice = 0;
     catAtual = listaCategorias;
     while (catAtual != NULL) {
@@ -227,115 +227,135 @@ void salvarDadosAtualizados(NoCategoria* listaCategorias) {
         catAtual = catAtual->proximo;
     }
     
-    /* Salva em arquivo */
+    // salva em um arquivo
     escreverBinario("dados.bin", arrayAlimentos, numAlimentos);
     free(arrayAlimentos);
 }
 
-/* Menu principal */
+// menu principal
 void menuPrincipal(NoCategoria* listaCategorias) {
     int opcao = 0;
     NoCategoria* categoria;
     float min, max;
     
     while (opcao != 9) {
-        printf("\n======================================\n");
-        printf("       SISTEMA DE ALIMENTOS\n");
-        printf("======================================\n");
+        printf("  **** SISTEMA DE ALIMENTOS ****\n\n");
         printf("1. Listar todas as categorias\n");
-        printf("2. Listar alimentos de uma categoria\n");
+        printf("2. Listar todos os alimentos de uma categoria\n");
         printf("3. Listar alimentos por energia (decrescente)\n");
         printf("4. Listar alimentos por proteína (decrescente)\n");
-        printf("5. Listar alimentos por intervalo de energia\n");
-        printf("6. Listar alimentos por intervalo de proteína\n");
+        printf("5. Listar alimentos por energia que estão dentro de um determinado intervalo\n");
+        printf("6. Listar alimentos por proteína que estão dentro de um determinado intervalo\n");
         printf("7. Remover uma categoria\n");
         printf("8. Remover um alimento\n");
-        printf("9. Sair\n");
-        printf("======================================\n");
+        printf("9. Sair\n\n");
+
         printf("Escolha uma opção: ");
         
+
+        // verifica se o que o user digitou é int
         if (scanf("%d", &opcao) != 1) {
-            while (getchar() != '\n') {} /* Limpa buffer */
+            while (getchar() != '\n') {} // Limpa buffer 
             printf("Opção inválida!\n");
             continue;
         }
-        while (getchar() != '\n') {} /* Limpa buffer */
-        
-        if (opcao == 1) {
-            listarCategorias(listaCategorias);
-        } else if (opcao == 2) {
-            categoria = escolherCategoria(listaCategorias);
-            if (categoria != NULL) {
-                listarAlimentosCategoria(categoria);
-            } else {
-                printf("Categoria inválida!\n");
-            }
-        } else if (opcao == 3) {
-            categoria = escolherCategoria(listaCategorias);
-            if (categoria != NULL) {
-                listarPorEnergia(categoria);
-            } else {
-                printf("Categoria inválida!\n");
-            }
-        } else if (opcao == 4) {
-            categoria = escolherCategoria(listaCategorias);
-            if (categoria != NULL) {
-                listarPorProteina(categoria);
-            } else {
-                printf("Categoria inválida!\n");
-            }
-        } else if (opcao == 5) {
-            categoria = escolherCategoria(listaCategorias);
-            if (categoria != NULL) {
-                printf("Digite o valor mínimo de energia: ");
-                if (scanf("%f", &min) != 1) {
-                    while (getchar() != '\n') {} /* Limpa buffer */
-                    printf("Valor inválido!\n");
-                    continue;
+        while (getchar() != '\n') {} // Limpa buffer 
+
+        // funcionalidades do menu
+        switch (opcao) {
+            case 1:
+                listarCategorias(listaCategorias);
+                break;
+
+            case 2:
+                categoria = escolherCategoria(listaCategorias);
+                if (categoria != NULL) {
+                    listarAlimentosCategoria(categoria);
+                } else {
+                    printf("Categoria inválida!\n");
                 }
-                printf("Digite o valor máximo de energia: ");
-                if (scanf("%f", &max) != 1) {
-                    while (getchar() != '\n') {} /* Limpa buffer */
-                    printf("Valor inválido!\n");
-                    continue;
+                break;
+
+            case 3:
+                categoria = escolherCategoria(listaCategorias);
+                if (categoria != NULL) {
+                    listarPorEnergia(categoria);
+                } else {
+                    printf("Categoria inválida!\n");
                 }
-                while (getchar() != '\n') {} /* Limpa buffer */
-                listarEnergiaIntervalo(categoria, min, max);
-            } else {
-                printf("Categoria inválida!\n");
-            }
-        } else if (opcao == 6) {
-            categoria = escolherCategoria(listaCategorias);
-            if (categoria != NULL) {
-                printf("Digite o valor mínimo de proteína: ");
-                if (scanf("%f", &min) != 1) {
-                    while (getchar() != '\n') {} /* Limpa buffer */
-                    printf("Valor inválido!\n");
-                    continue;
+                break;
+
+            case 4:
+                categoria = escolherCategoria(listaCategorias);
+                if (categoria != NULL) {
+                    listarPorProteina(categoria);
+                } else {
+                    printf("Categoria inválida!\n");
                 }
-                printf("Digite o valor máximo de proteína: ");
-                if (scanf("%f", &max) != 1) {
-                    while (getchar() != '\n') {} /* Limpa buffer */
-                    printf("Valor inválido!\n");
+                break;
+
+            case 5:
+                categoria = escolherCategoria(listaCategorias);
+                if (categoria != NULL) {
+                    printf("Digite o valor mínimo de energia: ");
+                    if (scanf("%f", &min) != 1) {
+                        while (getchar() != '\n') {} /* Limpa buffer */
+                        printf("Valor inválido!\n");
                     continue;
+                    }
+                    printf("Digite o valor máximo de energia: ");
+                    if (scanf("%f", &max) != 1) {
+                        while (getchar() != '\n') {} /* Limpa buffer */
+                        printf("Valor inválido!\n");
+                        continue;
+                    }
+                    while (getchar() != '\n') {} /* Limpa buffer */
+                    listarEnergiaIntervalo(categoria, min, max);
+                } else {
+                    printf("Categoria inválida!\n");
                 }
-                while (getchar() != '\n') {} /* Limpa buffer */
-                listarProteinaIntervalo(categoria, min, max);
-            } else {
-                printf("Categoria inválida!\n");
-            }
-        } else if (opcao == 7) {
-            removerCategoriaMenu(&listaCategorias);
-        } else if (opcao == 8) {
-            removerAlimentoMenu(listaCategorias);
-        } else if (opcao == 9) {
-            printf("Encerrando programa...\n");
-        } else {
-            printf("Opção inválida!\n");
+                break;
+
+            case 6:
+                categoria = escolherCategoria(listaCategorias);
+                if (categoria != NULL) {
+                    printf("Digite o valor mínimo de proteína: ");
+                    if (scanf("%f", &min) != 1) {
+                        while (getchar() != '\n') {} /* Limpa buffer */
+                        printf("Valor inválido!\n");
+                        continue;
+                    }
+                    printf("Digite o valor máximo de proteína: ");
+                    if (scanf("%f", &max) != 1) {
+                        while (getchar() != '\n') {} /* Limpa buffer */
+                        printf("Valor inválido!\n");
+                        continue;
+                    }
+                    while (getchar() != '\n') {} /* Limpa buffer */
+                    listarProteinaIntervalo(categoria, min, max);
+                } else {
+                    printf("Categoria inválida!\n");
+                }
+                break;
+
+            case 7:
+                removerCategoriaMenu(&listaCategorias);
+                break;
+
+            case 8:
+                removerAlimentoMenu(listaCategorias);
+                break;
+
+            case 9:
+                printf("Encerrando programa...\n");
+                break;
+
+            default:
+                printf("Opção inválida!\n");
         }
     }
     
-    /* Salva dados se houve modificação */
+    // se tiver modificação, salva elas
     if (dadosModificados == 1) {
         printf("\nSalvando alterações em dados.bin...\n");
         salvarDadosAtualizados(listaCategorias);
@@ -343,9 +363,8 @@ void menuPrincipal(NoCategoria* listaCategorias) {
     }
 }
 
-/*
- * Programa P2: Sistema de gerenciamento de alimentos
- */
+/* Programa P2: Sistema de gerenciamento de alimentos */
+
 int main(void) {
     Alimento* alimentos = NULL;
     NoCategoria* listaCategorias = NULL;
@@ -353,9 +372,9 @@ int main(void) {
     
     printf("=== Programa P2: Sistema de Alimentos ===\n\n");
     
-    /* Lê dados do arquivo binário */
+    // le o bin
     printf("Carregando dados de dados.bin...\n");
-    numAlimentos = lerBinario("dados.bin", &alimentos);
+    lerBinario("dados.bin", &alimentos, &numAlimentos);
     printf("Total de alimentos carregados: %d\n\n", numAlimentos);
     
     /* Constrói as estruturas de dados */
@@ -363,13 +382,13 @@ int main(void) {
     listaCategorias = construirEstruturas(alimentos, numAlimentos);
     printf("Estruturas construídas com sucesso!\n");
     
-    /* Libera o array original */
+    // libera array original
     free(alimentos);
     
-    /* Inicia menu principal */
+    // inicia o menu
     menuPrincipal(listaCategorias);
     
-    /* Libera as árvores de cada categoria */
+    // libera as arvores de categoria
     NoCategoria* catAtual = listaCategorias;
     while (catAtual != NULL) {
         liberarArvore((NoArvore*)catAtual->arvoreEnergia);
@@ -377,7 +396,7 @@ int main(void) {
         catAtual = catAtual->proximo;
     }
     
-    /* Libera toda a estrutura */
+    // libera toda a estrutura
     liberarListaCategorias(listaCategorias);
     
     printf("\nPrograma encerrado.\n");

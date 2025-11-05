@@ -1,9 +1,9 @@
 #ifndef ARVORE_H
 #define ARVORE_H
 
-#include "lista.h"
+#include "linked_list.h"
 
-/* Estrutura do nó da árvore binária de indexação */
+// define estrutura do nó da árvore
 typedef struct NoArvore {
     float chave;
     NoAlimento* alimento;
@@ -11,14 +11,14 @@ typedef struct NoArvore {
     struct NoArvore* direita;
 } NoArvore;
 
-/* Funções para manipulação da árvore binária */
+// funções de manipulação da árvore
 NoArvore* criarNoArvore(float chave, NoAlimento* alimento);
 NoArvore* inserirNaArvore(NoArvore* raiz, float chave, NoAlimento* alimento);
 void percorrerDecrescente(NoArvore* raiz);
 void percorrerIntervalo(NoArvore* raiz, float min, float max);
 void liberarArvore(NoArvore* raiz);
 
-/* Funções para construir árvores a partir de uma lista de alimentos */
+//funções para construir arvore
 NoArvore* construirArvoreEnergia(NoAlimento* listaAlimentos);
 NoArvore* construirArvoreProteina(NoAlimento* listaAlimentos);
 

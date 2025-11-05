@@ -1,7 +1,7 @@
 #ifndef TIPOS_H
 #define TIPOS_H
 
-/* Enumeração das categorias de alimentos */
+// define tipo das categorias dos alimentos
 typedef enum {
     CEREAIS_DERIVADOS,
     VERDURAS_HORTALICAS_DERIVADOS,
@@ -21,7 +21,7 @@ typedef enum {
     NUM_CATEGORIAS
 } CategoriaAlimento;
 
-/* Estrutura para armazenar dados de um alimento */
+// define modelo das info do alimento
 typedef struct {
     int numero;
     char descricao[200];
