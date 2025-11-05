@@ -1,203 +1,187 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "linked_list.h"
+#include "lista.h"
 
-ListaCategorias* criarListaCategorias() {
-    ListaCategorias *lista = (ListaCategorias*)malloc(sizeof(ListaCategorias));
-    if (lista != NULL) {
-        lista->inicio = NULL;
-        lista->tamanho = 0;
-    }
-    return lista;
+/* Retorna o nome da categoria baseado no enum */
+const char* obterNomeCategoria(CategoriaAlimento cat) {
+    const char* nomes[] = {
+        "Cereais e derivados",
+        "Verduras, hortaliças e derivados",
+        "Frutas e derivados",
+        "Gorduras e óleos",
+        "Pescados e frutos do mar",
+        "Carnes e derivados",
+        "Leite e derivados",
+        "Bebidas (alcoólicas e não alcoólicas)",
+        "Ovos e derivados",
+        "Produtos açucarados",
+        "Miscelâneas",
+        "Outros alimentos industrializados",
+        "Alimentos preparados",
+        "Leguminosas e derivados",
+        "Nozes e sementes"
+    };
+    return nomes[cat];
 }
 
-ListaAlimentos* criarListaAlimentos() {
-    ListaAlimentos *lista = (ListaAlimentos*)malloc(sizeof(ListaAlimentos));
-    if (lista != NULL) {
-        lista->inicio = NULL;
-        lista->tamanho = 0;
+/* Cria um novo nó de categoria */
+NoCategoria* criarNoCategoria(CategoriaAlimento cat, const char* nome) {
+    NoCategoria* novo = (NoCategoria*)malloc(sizeof(NoCategoria));
+    if (novo == NULL) {
+        fprintf(stderr, "Erro ao alocar memória para categoria\n");
+        exit(1);
     }
-    return lista;
+    
+    novo->categoria = cat;
+    strncpy(novo->nome, nome, 99);
+    novo->nome[99] = '\0';
+    novo->listaAlimentos = NULL;
+    novo->proximo = NULL;
+    novo->arvoreEnergia = NULL;
+    novo->arvoreProteina = NULL;
+    
+    return novo;
 }
 
-// Insere alimento em ordem alfabética na lista de alimentos
-void inserirAlimentoOrdenado(ListaAlimentos *listaAlim, Alimento alimento) {
-    NodeAlimento *novoNode = (NodeAlimento*)malloc(sizeof(NodeAlimento));
-    if (novoNode == NULL) {
-        printf("Erro ao alocar memória para novo alimento!\n");
-        return;
+/* Insere uma categoria na lista mantendo ordem alfabética */
+void inserirCategoriaOrdenada(NoCategoria** lista, NoCategoria* novo) {
+    NoCategoria* atual = *lista;
+    NoCategoria* anterior = NULL;
+    
+    /* Encontra a posição correta para inserção */
+    while (atual != NULL && strcmp(novo->nome, atual->nome) > 0) {
+        anterior = atual;
+        atual = atual->proximo;
     }
     
-    novoNode->dados = alimento;
-    novoNode->proximo = NULL;
-    
-    // Lista vazia ou novo alimento vem antes do primeiro
-    if (listaAlim->inicio == NULL || 
-        strcmp(alimento.nome, listaAlim->inicio->dados.nome) < 0) {
-        novoNode->proximo = listaAlim->inicio;
-        listaAlim->inicio = novoNode;
+    /* Insere no início */
+    if (anterior == NULL) {
+        novo->proximo = *lista;
+        *lista = novo;
     } else {
-        // Procura posição correta (ordem alfabética)
-        NodeAlimento *atual = listaAlim->inicio;
-        while (atual->proximo != NULL && 
-            strcmp(alimento.nome, atual->proximo->dados.nome) > 0) {
-            atual = atual->proximo;
-        }
-        novoNode->proximo = atual->proximo;
-        atual->proximo = novoNode;
+        /* Insere no meio ou fim */
+        novo->proximo = atual;
+        anterior->proximo = novo;
     }
-    
-    listaAlim->tamanho++;
 }
 
-// Insere categoria em ordem alfabética na lista de categorias
-void inserirCategoriaOrdenada(ListaCategorias *listaCat, NodeCategoria *novaCategoria) {
-    // Lista vazia ou nova categoria vem antes da primeira
-    if (listaCat->inicio == NULL || 
-        strcmp(novaCategoria->nomeCategoria, listaCat->inicio->nomeCategoria) < 0) {
-        novaCategoria->proximo = listaCat->inicio;
-        listaCat->inicio = novaCategoria;
-    } else {
-        // Procura posição correta (ordem alfabética)
-        NodeCategoria *atual = listaCat->inicio;
-        while (atual->proximo != NULL && 
-            strcmp(novaCategoria->nomeCategoria, atual->proximo->nomeCategoria) > 0) {
-            atual = atual->proximo;
-        }
-        novaCategoria->proximo = atual->proximo;
-        atual->proximo = novaCategoria;
-    }
+/* Busca uma categoria na lista */
+NoCategoria* buscarCategoria(NoCategoria* lista, CategoriaAlimento cat) {
+    NoCategoria* atual = lista;
     
-    listaCat->tamanho++;
-}
-
-// Busca categoria existente ou cria nova (em ordem alfabética)
-NodeCategoria* buscarOuCriarCategoria(ListaCategorias *listaCat, const char *nomeCategoria) {
-    // Busca categoria existente
-    NodeCategoria *atual = listaCat->inicio;
     while (atual != NULL) {
-        if (strcmp(atual->nomeCategoria, nomeCategoria) == 0) {
-            return atual; // Categoria encontrada
+        if (atual->categoria == cat) {
+            return atual;
         }
         atual = atual->proximo;
     }
     
-    // Categoria não existe, cria nova
-    NodeCategoria *novaCategoria = (NodeCategoria*)malloc(sizeof(NodeCategoria));
-    if (novaCategoria == NULL) {
-        printf("Erro ao alocar memória para categoria!\n");
-        return NULL;
-    }
-    
-    strcpy(novaCategoria->nomeCategoria, nomeCategoria);
-    novaCategoria->alimentos = criarListaAlimentos();
-    novaCategoria->proximo = NULL;
-    
-    // Insere em ordem alfabética
-    inserirCategoriaOrdenada(listaCat, novaCategoria);
-    
-    return novaCategoria;
+    return NULL;
 }
 
-// Adiciona alimento na categoria correspondente
-void adicionarAlimento(ListaCategorias *listaCat, Alimento alimento) {
-    NodeCategoria *categoria = buscarOuCriarCategoria(listaCat, alimento.categoria);
-    if (categoria != NULL) {
-        inserirAlimentoOrdenado(categoria->alimentos, alimento);
-    }
-}
-
-void exibirCategorias(ListaCategorias *listaCat) {
-    if (listaCat->inicio == NULL) {
-        printf("Nenhuma categoria cadastrada!\n");
-        return;
-    }
+/* Remove uma categoria da lista */
+void removerCategoria(NoCategoria** lista, CategoriaAlimento cat) {
+    NoCategoria* atual = *lista;
+    NoCategoria* anterior = NULL;
     
-    printf(" * ALIMENTOS POR CATEGORIA * \n");
-    
-    NodeCategoria *catAtual = listaCat->inicio;
-    int numCategoria = 1;
-    
-    while (catAtual != NULL) {
-        printf("CATEGORIA %d: %s\n", numCategoria, catAtual->nomeCategoria);
-        
-        NodeAlimento *alimAtual = catAtual->alimentos->inicio;
-        int numAlimento = 1;
-        
-        if (alimAtual == NULL) {
-            printf("Essa categoria não possui alimentos\n");
-        }
-        
-        while (alimAtual != NULL) {
-            printf("  %d. %s\n", numAlimento, alimAtual->dados.nome);
-            printf("     ID: %d\n", alimAtual->dados.id);
-            printf("     Calorias: %.2f kcal\n", alimAtual->dados.calorias);
-            printf("     Proteínas: %.2f g\n", alimAtual->dados.proteinas);
-            printf("     Carboidratos: %.2f g\n", alimAtual->dados.carboidratos);
-            printf("     Gorduras: %.2f g\n", alimAtual->dados.gorduras);
-            printf("\n");
+    while (atual != NULL) {
+        if (atual->categoria == cat) {
+            if (anterior == NULL) {
+                *lista = atual->proximo;
+            } else {
+                anterior->proximo = atual->proximo;
+            }
             
-            alimAtual = alimAtual->proximo;
-            numAlimento++;
+            liberarListaAlimentos(atual->listaAlimentos);
+            free(atual);
+            return;
         }
-        
-        catAtual = catAtual->proximo;
-        numCategoria++;
+        anterior = atual;
+        atual = atual->proximo;
     }
-    
-    printf("Total de categorias: %d\n", listaCat->tamanho);
 }
 
-void liberarCategorias(ListaCategorias *listaCat) {
-    NodeCategoria *catAtual = listaCat->inicio;
+/* Libera toda a lista de categorias */
+void liberarListaCategorias(NoCategoria* lista) {
+    NoCategoria* atual = lista;
+    NoCategoria* temp;
     
-    while (catAtual != NULL) {
-        NodeCategoria *proxCat = catAtual->proximo;
-        
-        // Libera todos os alimentos da categoria
-        NodeAlimento *alimAtual = catAtual->alimentos->inicio;
-        while (alimAtual != NULL) {
-            NodeAlimento *proxAlim = alimAtual->proximo;
-            free(alimAtual);
-            alimAtual = proxAlim;
-        }
-        
-        free(catAtual->alimentos);
-        free(catAtual);
-        catAtual = proxCat;
+    while (atual != NULL) {
+        temp = atual;
+        atual = atual->proximo;
+        liberarListaAlimentos(temp->listaAlimentos);
+        free(temp);
     }
-    
-    free(listaCat);
-    printf("Memória liberada com sucesso!\n");
 }
 
-ListaCategorias* carregarDoBinario() {
-    FILE *arquivoBIN = fopen("dados.bin", "rb");
-    
-    if (arquivoBIN == NULL) {
-        printf("Erro ao abrir o arquivo binário para leitura!\n");
-        return NULL;
+/* Cria um novo nó de alimento */
+NoAlimento* criarNoAlimento(Alimento* alimento) {
+    NoAlimento* novo = (NoAlimento*)malloc(sizeof(NoAlimento));
+    if (novo == NULL) {
+        fprintf(stderr, "Erro ao alocar memória para alimento\n");
+        exit(1);
     }
     
-    ListaCategorias *listaCat = criarListaCategorias();
-    if (listaCat == NULL) {
-        fclose(arquivoBIN);
-        return NULL;
+    novo->alimento = alimento;
+    novo->proximo = NULL;
+    
+    return novo;
+}
+
+/* Insere um alimento na lista mantendo ordem alfabética */
+void inserirAlimentoOrdenado(NoAlimento** lista, NoAlimento* novo) {
+    NoAlimento* atual = *lista;
+    NoAlimento* anterior = NULL;
+    
+    /* Encontra a posição correta para inserção */
+    while (atual != NULL && strcmp(novo->alimento->descricao, atual->alimento->descricao) > 0) {
+        anterior = atual;
+        atual = atual->proximo;
     }
     
-    Alimento alimento;
-    int totalAlimentos = 0;
-    
-    printf("\nCarregando dados do arquivo binário...\n");
-    
-    while (fread(&alimento, sizeof(Alimento), 1, arquivoBIN) == 1) {
-        adicionarAlimento(listaCat, alimento);
-        totalAlimentos++;
+    /* Insere no início */
+    if (anterior == NULL) {
+        novo->proximo = *lista;
+        *lista = novo;
+    } else {
+        /* Insere no meio ou fim */
+        novo->proximo = atual;
+        anterior->proximo = novo;
     }
+}
+
+/* Remove um alimento da lista */
+void removerAlimento(NoAlimento** lista, int numeroAlimento) {
+    NoAlimento* atual = *lista;
+    NoAlimento* anterior = NULL;
     
-    fclose(arquivoBIN);
-    printf("Dados carregados com sucesso!\n");
+    while (atual != NULL) {
+        if (atual->alimento->numero == numeroAlimento) {
+            if (anterior == NULL) {
+                *lista = atual->proximo;
+            } else {
+                anterior->proximo = atual->proximo;
+            }
+            
+            free(atual->alimento);
+            free(atual);
+            return;
+        }
+        anterior = atual;
+        atual = atual->proximo;
+    }
+}
+
+/* Libera toda a lista de alimentos */
+void liberarListaAlimentos(NoAlimento* lista) {
+    NoAlimento* atual = lista;
+    NoAlimento* temp;
     
-    return listaCat;
+    while (atual != NULL) {
+        temp = atual;
+        atual = atual->proximo;
+        free(temp->alimento);
+        free(temp);
+    }
 }
