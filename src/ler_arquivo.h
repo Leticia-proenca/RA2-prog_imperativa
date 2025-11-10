@@ -3,6 +3,7 @@
 
 #include "linked_list.h"
 
+CategoriaAlimento stringParaCategoria(const char* str);
 // le o csv
 void lerCSV(const char* nomeArquivo, Alimento** alimentos, int* numAlimentos);
 // escreve o bin com base no csv

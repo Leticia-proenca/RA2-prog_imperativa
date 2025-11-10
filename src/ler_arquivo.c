@@ -3,73 +3,92 @@
 #include <string.h>
 #include "ler_arquivo.h"
 
-// le o csv
-void lerCSV(const char* nomeArquivo, Alimento** alimentos, int* numAlimentos) {// nomeArquivo é uma variavel de parametro
-    // Alimento** é um ponteiro duplo que passa o endereço do ponteiro Alimentos 
-    // numAlimentos é um ponteiro que retona o número de alimentos lidos
-    FILE* arquivo = fopen(nomeArquivo, "r");// abre arquivo no read
-    if (arquivo == NULL) {// se não conseguir abrir
+// Função auxiliar para converter string em CategoriaAlimento
+CategoriaAlimento stringParaCategoria(const char* str) {
+    if (strcmp(str, "Cereais e derivados") == 0) return CEREAIS_DERIVADOS;
+    if (strcmp(str, "Verduras, hortaliças e derivados") == 0) return VERDURAS_HORTALICAS_DERIVADOS;
+    if (strcmp(str, "Frutas e derivados") == 0) return FRUTAS_DERIVADOS;
+    if (strcmp(str, "Gorduras e óleos") == 0) return GORDURAS_OLEOS;
+    if (strcmp(str, "Pescados e frutos do mar") == 0) return PESCADOS_FRUTOS_MAR;
+    if (strcmp(str, "Carnes e derivados") == 0) return CARNES_DERIVADOS;
+    if (strcmp(str, "Leite e derivados") == 0) return LEITE_DERIVADOS;
+    if (strcmp(str, "Bebidas") == 0) return BEBIDAS;
+    if (strcmp(str, "Ovos e derivados") == 0) return OVOS_DERIVADOS;
+    if (strcmp(str, "Produtos açucarados") == 0) return PRODUTOS_ACUCARADOS;
+    if (strcmp(str, "Miscelâneas") == 0) return MISCELANEAS;
+    if (strcmp(str, "Outros industrializados") == 0) return OUTROS_INDUSTRIALIZADOS;
+    if (strcmp(str, "Alimentos industrializados") == 0) return OUTROS_INDUSTRIALIZADOS;
+    if (strcmp(str, "Alimentos preparados") == 0) return ALIMENTOS_PREPARADOS;
+    if (strcmp(str, "Leguminosas e derivados") == 0) return LEGUMINOSAS_DERIVADOS;
+    if (strcmp(str, "Nozes e sementes") == 0) return NOZES_SEMENTES;
+    
+    return CEREAIS_DERIVADOS; // Valor padrão
+}
+
+// Função lerCSV corrigida
+void lerCSV(const char* nomeArquivo, Alimento** alimentos, int* numAlimentos) {
+    FILE* arquivo = fopen(nomeArquivo, "r");
+    if (arquivo == NULL) {
         fprintf(stderr, "Erro ao abrir arquivo %s\n", nomeArquivo);
-        exit(1);// encerra programa com error
+        exit(1);
     }
     
-    int capacidade = 100;// memória inicial alocada
+    int capacidade = 100;
     int contador = 0;
-    *alimentos = (Alimento*)malloc(capacidade * sizeof(Alimento));// aloca inicalmente memória para 100 alimentos
+    *alimentos = (Alimento*)malloc(capacidade * sizeof(Alimento));
 
-    if (*alimentos == NULL) {// verifica se a alocação falhou
+    if (*alimentos == NULL) {
         fprintf(stderr, "Erro ao alocar memória\n");
         fclose(arquivo);
         exit(1);
     }
     
-    char linha[500];// buffer para armazenar linhas do csv
-    int categoria;
+    char linha[500];
+    char categoriaStr[100];
     
     // pula cabeçalho
     if (fgets(linha, sizeof(linha), arquivo) != NULL) {
-        // verifica se o cabeçalho tem letra
         if (linha[0] < '0' || linha[0] > '9') {
-            // se tinha cabeçalho então não faz nada
+            // tinha cabeçalho, continua
         } else {
-            // se não tinha cabeçalho então volta - faz rewind
+            // não tinha cabeçalho, volta
             rewind(arquivo);
         }
     }
     
     // loop principal de leitura do arquivo
-    while (fgets(linha, sizeof(linha), arquivo) != NULL) {// le linha por linha, fgets retonra null quando termina o csv
+    while (fgets(linha, sizeof(linha), arquivo) != NULL) {
         // remove quebra linha
-        linha[strcspn(linha, "\r")] = '\0';
+        linha[strcspn(linha, "\r\n")] = '\0';
         
-        // realoca se necessario, se ta cheio, dobra o tamanho
+        // realoca se necessario
         if (contador >= capacidade) {
             capacidade *= 2;
-            *alimentos = (Alimento*)realloc(*alimentos, capacidade * sizeof(Alimento));// redimensiona o bloco de memória existente
-            // pode mudar o bloco de lugar mas mantem todos os dados
+            *alimentos = (Alimento*)realloc(*alimentos, capacidade * sizeof(Alimento));
 
-            if (*alimentos == NULL) { // verifica se a realocação falhou
+            if (*alimentos == NULL) {
                 fprintf(stderr, "Erro ao realocar memória\n");
                 fclose(arquivo);
                 exit(1);
             }
         }
         
-        // pega as info linha por linha 
-        if (sscanf(linha, "%d,%[^,],%f,%f,%d",
+        // pega as info linha por linha (agora lendo categoria como string)
+        if (sscanf(linha, "%d,%[^,],%f,%f,%[^\n]",
                 &(*alimentos)[contador].numero,
                 (*alimentos)[contador].descricao,
                 &(*alimentos)[contador].energia,
                 &(*alimentos)[contador].proteina,
-                &categoria) == 5) { // o ==5 verifica se leu os 5 dados que precisava
+                categoriaStr) == 5) {
             
-            (*alimentos)[contador].categoria = (CategoriaAlimento)categoria;/// acessa a possição contador do array
+            // converte string para enum
+            (*alimentos)[contador].categoria = stringParaCategoria(categoriaStr);
             contador++;
         }
     }
     
     fclose(arquivo);
-    *numAlimentos = contador;// atualiza ponteiro que ve a quantidade de alimentos lidos
+    *numAlimentos = contador;
 }
 
 // transcreve os dados para bin

@@ -1,48 +1,31 @@
 # Compilador e flags
 CC = gcc
-CFLAGS = -Wall -Wextra -std=c99 -g
+CFLAGS = -Wall -Wextra -O2
 
-# Arquivos objeto
-OBJ_COMUM = lista.o arvore.o arquivo.o
-OBJ_P1 = P1.o $(OBJ_COMUM)
-OBJ_P2 = P2.o menu.o $(OBJ_COMUM)
+# Pasta com os arquivos fonte
+SRC_DIR = src
 
-# Executáveis
-EXECUTAVEIS = P1 P2
+# Arquivos fonte compartilhados
+COMMON_SRCS = $(SRC_DIR)/ler_arquivo.c $(SRC_DIR)/arvore_binaria.c $(SRC_DIR)/linked_list.c
+COMMON_OBJS = $(COMMON_SRCS:.c=.o)
 
-# Regra padrão
-all: $(EXECUTAVEIS)
+# Alvos principais
+all: P1 P2
 
-# Compilação do P1
-P1: $(OBJ_P1)
-	$(CC) $(CFLAGS) -o P1 $(OBJ_P1)
+# Programa 1
+P1: $(SRC_DIR)/P1.o $(COMMON_OBJS)
+	$(CC) $(CFLAGS) -o P1 $(SRC_DIR)/P1.o $(COMMON_OBJS)
 
-# Compilação do P2
-P2: $(OBJ_P2)
-	$(CC) $(CFLAGS) -o P2 $(OBJ_P2)
+# Programa 2
+P2: $(SRC_DIR)/P2.o $(COMMON_OBJS)
+	$(CC) $(CFLAGS) -o P2 $(SRC_DIR)/P2.o $(COMMON_OBJS)
 
-# Regras para arquivos objeto
-P1.o: P1.c arquivo.h tipos.h
-	$(CC) $(CFLAGS) -c P1.c
-
-P2.o: P2.c arquivo.h lista.h arvore.h tipos.h
-	$(CC) $(CFLAGS) -c P2.c
-
-lista.o: lista.c lista.h tipos.h
-	$(CC) $(CFLAGS) -c lista.c
-
-arvore.o: arvore.c arvore.h lista.h tipos.h
-	$(CC) $(CFLAGS) -c arvore.c
-
-arquivo.o: arquivo.c arquivo.h lista.h tipos.h
-	$(CC) $(CFLAGS) -c arquivo.c
+# Regra genérica de compilação
+$(SRC_DIR)/%.o: $(SRC_DIR)/%.c
+	$(CC) $(CFLAGS) -c $< -o $@
 
 # Limpeza
 clean:
-	rm -f *.o $(EXECUTAVEIS) dados.bin
+	rm -f $(SRC_DIR)/*.o P1 P2
 
-# Limpeza completa (incluindo arquivos de backup)
-distclean: clean
-	rm -f *~ *.bak
-
-.PHONY: all clean distclean
+.PHONY: all clean
