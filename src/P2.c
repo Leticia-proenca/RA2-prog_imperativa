@@ -270,12 +270,10 @@ void menuPrincipal(NoCategoria* listaCategorias) {
         while (getchar() != '\n') {} // Limpa buffer 
 
         // funcionalidades do menu
-        switch (opcao) {
-            case 1:
+        if (opcao == 1) {
                 listarCategorias(listaCategorias);
                 break;
-
-            case 2:
+            } else if (opcao == 2){
                 categoria = escolherCategoria(listaCategorias);// pede pro usuario escolher a categoria
                 if (categoria != NULL) {
                     listarAlimentosCategoria(categoria);// lsta os alimentos
@@ -283,8 +281,7 @@ void menuPrincipal(NoCategoria* listaCategorias) {
                     printf("Categoria inválida!\n");
                 }
                 break;
-
-            case 3:
+            } else if (opcao == 3) {
                 categoria = escolherCategoria(listaCategorias); 
                 if (categoria != NULL) {
                     listarPorEnergia(categoria);// puxa a arvore binaria da categoria escolhida pelo user
@@ -292,8 +289,7 @@ void menuPrincipal(NoCategoria* listaCategorias) {
                     printf("Categoria inválida!\n");
                 }
                 break;
-
-            case 4:
+            } else if (opcao == 4){
                 categoria = escolherCategoria(listaCategorias);
                 if (categoria != NULL) {
                     listarPorProteina(categoria);
@@ -301,8 +297,7 @@ void menuPrincipal(NoCategoria* listaCategorias) {
                     printf("Categoria inválida!\n");
                 }
                 break;
-
-            case 5:
+            } else if (opcao == 5){
                 categoria = escolherCategoria(listaCategorias);
                 if (categoria != NULL) {
                     printf("Digite o valor mínimo de energia: ");// pede o minimo do intervalo
@@ -322,9 +317,7 @@ void menuPrincipal(NoCategoria* listaCategorias) {
                 } else {
                     printf("Categoria inválida!\n");
                 }
-                break;
-
-            case 6:
+            } else if (opcao == 6){
                 categoria = escolherCategoria(listaCategorias);
                 if (categoria != NULL) {
                     printf("Digite o valor mínimo de proteína: ");
@@ -345,23 +338,15 @@ void menuPrincipal(NoCategoria* listaCategorias) {
                     printf("Categoria inválida!\n");
                 }
                 break;
-
-            case 7:
+            } else if (opcao == 7){
                 removerCategoriaMenu(&listaCategorias);
                 break;
-
+            } else if (opcao == 8){
             case 8:
                 removerAlimentoMenu(listaCategorias);
                 break;
-
-            case 9:
-                printf("Encerrando programa...\n");
-                break;
-
-            default:
-                printf("Opção inválida!\n");
+            }
         }
-    }
     
     // se tiver modificação, salva elas
     if (dadosModificados == 1) {
