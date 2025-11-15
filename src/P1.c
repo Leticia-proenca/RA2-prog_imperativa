@@ -5,7 +5,7 @@
 // P1: Lê dados de alimentos de um arquivo CSV e salva em formato binário 
 
 int main(void) {// não recebe nada
-    Alimento* alimentos = NULL;// array dinâmico, vai ser preenchido pelo lerCVS
+    Alimento* alimentos = NULL;// array dinâmico, preenchido pelo lerCVS
     int numAlimentos;// quantidade de alimentos 
     
     printf("=== Programa P1: Conversão CSV para Binário ===\n\n");// informativo
