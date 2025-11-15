@@ -342,7 +342,6 @@ void menuPrincipal(NoCategoria* listaCategorias) {
                 removerCategoriaMenu(&listaCategorias);
                 break;
             } else if (opcao == 8){
-            case 8:
                 removerAlimentoMenu(listaCategorias);
                 break;
             }

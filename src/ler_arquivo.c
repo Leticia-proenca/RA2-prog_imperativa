@@ -25,7 +25,7 @@ CategoriaAlimento stringParaCategoria(const char* str) {
     return CEREAIS_DERIVADOS; // Valor padrão
 }
 
-// Função lerCSV corrigida
+// Função lerCSV 
 void lerCSV(const char* nomeArquivo, Alimento** alimentos, int* numAlimentos) {
     FILE* arquivo = fopen(nomeArquivo, "r");
     if (arquivo == NULL) {
