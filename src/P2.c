@@ -262,12 +262,12 @@ void menuPrincipal(NoCategoria* listaCategorias) {
         
 
         // verifica se o que o user digitou é int
-        if (scanf("%d", &opcao) != 1) {
+        if (scanf("%d", &opcao) == 1) {
+            while (getchar() != '\n') {} // Limpa buffer 
+        } else {
             while (getchar() != '\n') {} // Limpa buffer 
             printf("Opção inválida!\n");
-            continue;
         }
-        while (getchar() != '\n') {} // Limpa buffer 
 
         // funcionalidades do menu
         if (opcao == 1) {
@@ -297,41 +297,50 @@ void menuPrincipal(NoCategoria* listaCategorias) {
                 categoria = escolherCategoria(listaCategorias);
                 if (categoria != NULL) {
                     printf("Digite o valor mínimo de energia: ");// pede o minimo do intervalo
-                    if (scanf("%f", &min) != 1) {
-                        while (getchar() != '\n') {} /* Limpa buffer */
+
+                    if (scanf("%f", &min) == 1) {
+                        printf("Digite o valor máximo de energia: ");
+
+                        if (scanf("%f", &max) == 1){
+                            while (getchar() != '\n') {} // limpa buffer
+                            listarEnergiaIntervalo(categoria, min, max);
+
+                        } else{
+                            while (getchar() != '\n'){} //limpa buffer
+                            printf("Valor invalido!\n");
+                        }
+
+                    } else {
+                        while (getchar() != '\n'){} //limpa buffer
                         printf("Valor inválido!\n");
-                    continue;
                     }
-                    printf("Digite o valor máximo de energia: ");// pede o maximo do intervalo
-                    if (scanf("%f", &max) != 1) {
-                        while (getchar() != '\n') {} /* Limpa buffer */
-                        printf("Valor inválido!\n");
-                        continue;
-                    }
-                    while (getchar() != '\n') {} /* Limpa buffer */
-                    listarEnergiaIntervalo(categoria, min, max);// puxa da arvore binaria
+
                 } else {
-                    printf("Categoria inválida!\n");
+                    printf("Categoria inválida!");
                 }
             } else if (opcao == 6){
                 categoria = escolherCategoria(listaCategorias);
+
                 if (categoria != NULL) {
                     printf("Digite o valor mínimo de proteína: ");
-                    if (scanf("%f", &min) != 1) {
-                        while (getchar() != '\n') {} /* Limpa buffer */
+
+                    if (scanf("%f", &min) == 1) {
+                        printf("Digite o valor mínimo de proteína: ");
+
+                        if (scanf("%f", &max) == 1){
+                            while (getchar() != '\n') {} // limpa buffer
+                            listarProteinaIntervalo(categoria, min, max);
+
+                        } else {
+                            while (getchar() != '\n'){} //limpa buffer
+                            printf("Valor invalido!\n");
+                        }
+                    } else {
+                        while (getchar() != '\n'){} //limpa buffer
                         printf("Valor inválido!\n");
-                        continue;
                     }
-                    printf("Digite o valor máximo de proteína: ");
-                    if (scanf("%f", &max) != 1) {
-                        while (getchar() != '\n') {} /* Limpa buffer */
-                        printf("Valor inválido!\n");
-                        continue;
-                    }
-                    while (getchar() != '\n') {} /* Limpa buffer */
-                    listarProteinaIntervalo(categoria, min, max);
                 } else {
-                    printf("Categoria inválida!\n");
+                    printf("Categoria inválida!");
                 }
             } else if (opcao == 7){
                 removerCategoriaMenu(&listaCategorias);
