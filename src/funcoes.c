@@ -320,12 +320,12 @@ void menuPrincipal(NoCategoria* listaCategorias) {
                             listarEnergiaIntervalo(categoria, min, max);
 
                         } else{
-                            while (getchar() != '\n'){} //limpa buffer
+                            limparBuffer(); //limpa buffer
                             printf("Valor invalido!\n");
                         }
 
                     } else {
-                        while (getchar() != '\n'){} //limpa buffer
+                        limparBuffer(); //limpa buffer
                         printf("Valor inválido!\n");
                     }
 
@@ -345,13 +345,12 @@ void menuPrincipal(NoCategoria* listaCategorias) {
                         if (scanf("%f", &max) == 1){
                             limparBuffer(); // limpa buffer
                             listarProteinaIntervalo(categoria, min, max);
-
                         } else {
-                            while (getchar() != '\n'){} //limpa buffer
+                            limparBuffer(); //limpa buffer
                             printf("Valor invalido!\n");
                         }
                     } else {
-                        while (getchar() != '\n'){} //limpa buffer
+                        limparBuffer(); //limpa buffer
                         printf("Valor inválido!\n");
                     }
                 } else {
