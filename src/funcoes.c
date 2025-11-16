@@ -108,6 +108,16 @@ void listarProteinaIntervalo(NoCategoria* categoria, float min, float max) {
     printf("\n");
 }
 
+// função de limpar buffer do teclado
+void limparBuffer(){
+    while (getchar() != '\n') {}
+}
+
+// função para limpar o termal
+void limparTerminal(){
+    system("clear");
+}
+
 // escolhe uma categoria
 NoCategoria* escolherCategoria(NoCategoria* listaCategorias) {// retorna o ponteiro da categoria ou null se não encontrado
     int opcao;
@@ -117,10 +127,10 @@ NoCategoria* escolherCategoria(NoCategoria* listaCategorias) {// retorna o ponte
     listarCategorias(listaCategorias);// lista as categorias
     printf("Escolha o número da categoria: ");// input do user
     if (scanf("%d", &opcao) != 1) {// verifica o input
-        while (getchar() != '\n') {} // Limpa buffer 
+        limparBuffer(); // Limpa buffer 
         return NULL;
     }
-    while (getchar() != '\n') {} // Limpa buffer 
+    limparBuffer(); // Limpa buffer 
     
     // encontra a categoria escolhida
     while (atual != NULL && contador < opcao) {// vai navegando até achar a categoria na posição escolhida, só avança até o que foi escolhido
@@ -171,11 +181,11 @@ void removerAlimentoMenu(NoCategoria* listaCategorias) {
     listarAlimentosCategoria(categoria);// lista todos os alimentos da categoria
     printf("Digite o número do alimento a remover: ");
     if (scanf("%d", &numeroAlimento) != 1) {// digita o númeor do alimento
-        while (getchar() != '\n') {} // Limpa buffer 
+        limparBuffer(); // Limpa buffer 
         printf("Número inválido!\n");// valida entrada do numero do alimento
         return;
     }
-    while (getchar() != '\n') {} // Limpa buffer 
+    limparBuffer(); // Limpa buffer 
     
     removerAlimento(&categoria->listaAlimentos, numeroAlimento);// remove da linnked list
     
@@ -262,16 +272,18 @@ void menuPrincipal(NoCategoria* listaCategorias) {
 
         // verifica se o que o user digitou é int
         if (scanf("%d", &opcao) == 1) {
-            while (getchar() != '\n') {} // Limpa buffer 
+            limparBuffer(); // Limpa buffer 
         } else {
-            while (getchar() != '\n') {} // Limpa buffer 
+            limparBuffer(); // Limpa buffer 
             printf("Opção inválida!\n");
         }
 
         // funcionalidades do menu
         if (opcao == 1) {
+                limparTerminal();  
                 listarCategorias(listaCategorias);
             } else if (opcao == 2){
+                limparTerminal();  
                 categoria = escolherCategoria(listaCategorias);// pede pro usuario escolher a categoria
                 if (categoria != NULL) {
                     listarAlimentosCategoria(categoria);// lsta os alimentos
@@ -279,6 +291,7 @@ void menuPrincipal(NoCategoria* listaCategorias) {
                     printf("Categoria inválida!\n");
                 }
             } else if (opcao == 3) {
+                limparTerminal();  
                 categoria = escolherCategoria(listaCategorias); 
                 if (categoria != NULL) {
                     listarPorEnergia(categoria);// puxa a arvore binaria da categoria escolhida pelo user
@@ -286,6 +299,7 @@ void menuPrincipal(NoCategoria* listaCategorias) {
                     printf("Categoria inválida!\n");
                 }
             } else if (opcao == 4){
+                limparTerminal();  
                 categoria = escolherCategoria(listaCategorias);
                 if (categoria != NULL) {
                     listarPorProteina(categoria);
@@ -293,6 +307,7 @@ void menuPrincipal(NoCategoria* listaCategorias) {
                     printf("Categoria inválida!\n");
                 }
             } else if (opcao == 5){
+                limparTerminal();  
                 categoria = escolherCategoria(listaCategorias);
                 if (categoria != NULL) {
                     printf("Digite o valor mínimo de energia: ");// pede o minimo do intervalo
@@ -301,7 +316,7 @@ void menuPrincipal(NoCategoria* listaCategorias) {
                         printf("Digite o valor máximo de energia: ");
 
                         if (scanf("%f", &max) == 1){
-                            while (getchar() != '\n') {} // limpa buffer
+                            limparBuffer(); // limpa buffer
                             listarEnergiaIntervalo(categoria, min, max);
 
                         } else{
@@ -318,16 +333,17 @@ void menuPrincipal(NoCategoria* listaCategorias) {
                     printf("Categoria inválida!");
                 }
             } else if (opcao == 6){
+                limparTerminal();  
                 categoria = escolherCategoria(listaCategorias);
 
                 if (categoria != NULL) {
                     printf("Digite o valor mínimo de proteína: ");
 
                     if (scanf("%f", &min) == 1) {
-                        printf("Digite o valor mínimo de proteína: ");
+                        printf("Digite o valor máximo de proteína: ");
 
                         if (scanf("%f", &max) == 1){
-                            while (getchar() != '\n') {} // limpa buffer
+                            limparBuffer(); // limpa buffer
                             listarProteinaIntervalo(categoria, min, max);
 
                         } else {
@@ -342,8 +358,10 @@ void menuPrincipal(NoCategoria* listaCategorias) {
                     printf("Categoria inválida!");
                 }
             } else if (opcao == 7){
+                limparTerminal();  
                 removerCategoriaMenu(&listaCategorias);
             } else if (opcao == 8){
+                limparTerminal();
                 removerAlimentoMenu(listaCategorias);
             }
         }
