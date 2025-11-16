@@ -6,7 +6,12 @@ CFLAGS = -Wall -Wextra -O2
 SRC_DIR = src
 
 # Arquivos fonte compartilhados
-COMMON_SRCS = $(SRC_DIR)/ler_arquivo.c $(SRC_DIR)/arvore_binaria.c $(SRC_DIR)/linked_list.c
+COMMON_SRCS = \
+    $(SRC_DIR)/ler_arquivo.c \
+    $(SRC_DIR)/arvore_binaria.c \
+    $(SRC_DIR)/linked_list.c \
+    $(SRC_DIR)/funcoes.c
+
 COMMON_OBJS = $(COMMON_SRCS:.c=.o)
 
 # Alvos principais
