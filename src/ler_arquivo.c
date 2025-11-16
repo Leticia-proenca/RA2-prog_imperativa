@@ -5,24 +5,43 @@
 
 // Função auxiliar para converter string em CategoriaAlimento
 CategoriaAlimento stringParaCategoria(const char* str) {
-    if (strcmp(str, "Cereais e derivados") == 0) return CEREAIS_DERIVADOS;
-    if (strcmp(str, "Verduras, hortaliças e derivados") == 0) return VERDURAS_HORTALICAS_DERIVADOS;
-    if (strcmp(str, "Frutas e derivados") == 0) return FRUTAS_DERIVADOS;
-    if (strcmp(str, "Gorduras e óleos") == 0) return GORDURAS_OLEOS;
-    if (strcmp(str, "Pescados e frutos do mar") == 0) return PESCADOS_FRUTOS_MAR;
-    if (strcmp(str, "Carnes e derivados") == 0) return CARNES_DERIVADOS;
-    if (strcmp(str, "Leite e derivados") == 0) return LEITE_DERIVADOS;
-    if (strcmp(str, "Bebidas") == 0) return BEBIDAS;
-    if (strcmp(str, "Ovos e derivados") == 0) return OVOS_DERIVADOS;
-    if (strcmp(str, "Produtos açucarados") == 0) return PRODUTOS_ACUCARADOS;
-    if (strcmp(str, "Miscelâneas") == 0) return MISCELANEAS;
-    if (strcmp(str, "Outros industrializados") == 0) return OUTROS_INDUSTRIALIZADOS;
-    if (strcmp(str, "Alimentos industrializados") == 0) return OUTROS_INDUSTRIALIZADOS;
-    if (strcmp(str, "Alimentos preparados") == 0) return ALIMENTOS_PREPARADOS;
-    if (strcmp(str, "Leguminosas e derivados") == 0) return LEGUMINOSAS_DERIVADOS;
-    if (strcmp(str, "Nozes e sementes") == 0) return NOZES_SEMENTES;
+    CategoriaAlimento categoria = CEREAIS_DERIVADOS;
     
-    return CEREAIS_DERIVADOS; // Valor padrão
+    if (strcmp(str, "Cereais e derivados") == 0) {
+        categoria = CEREAIS_DERIVADOS;
+    } else if (strcmp(str, "Verduras, hortaliças e derivados") == 0) {
+        categoria = VERDURAS_HORTALICAS_DERIVADOS;
+    } else if (strcmp(str, "Frutas e derivados") == 0) {
+        categoria = FRUTAS_DERIVADOS;
+    } else if (strcmp(str, "Gorduras e óleos") == 0) {
+        categoria = GORDURAS_OLEOS;
+    } else if (strcmp(str, "Pescados e frutos do mar") == 0) {
+        categoria = PESCADOS_FRUTOS_MAR;
+    } else if (strcmp(str, "Carnes e derivados") == 0) {
+        categoria = CARNES_DERIVADOS;
+    } else if (strcmp(str, "Leite e derivados") == 0) {
+        categoria = LEITE_DERIVADOS;
+    } else if (strcmp(str, "Bebidas") == 0) {
+        categoria = BEBIDAS;
+    } else if (strcmp(str, "Ovos e derivados") == 0) {
+        categoria = OVOS_DERIVADOS;
+    } else if (strcmp(str, "Produtos açucarados") == 0) {
+        categoria = PRODUTOS_ACUCARADOS;
+    } else if (strcmp(str, "Miscelâneas") == 0) {
+        categoria = MISCELANEAS;
+    } else if (strcmp(str, "Outros industrializados") == 0) {
+        categoria = OUTROS_INDUSTRIALIZADOS;
+    } else if (strcmp(str, "Alimentos industrializados") == 0) {
+        categoria = OUTROS_INDUSTRIALIZADOS;
+    } else if (strcmp(str, "Alimentos preparados") == 0) {
+        categoria = ALIMENTOS_PREPARADOS;
+    } else if (strcmp(str, "Leguminosas e derivados") == 0) {
+        categoria = LEGUMINOSAS_DERIVADOS;
+    } else if (strcmp(str, "Nozes e sementes") == 0) {
+        categoria = NOZES_SEMENTES;
+    }
+    
+    return categoria;
 }
 
 // Função lerCSV 
