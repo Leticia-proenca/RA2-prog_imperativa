@@ -272,7 +272,6 @@ void menuPrincipal(NoCategoria* listaCategorias) {
         // funcionalidades do menu
         if (opcao == 1) {
                 listarCategorias(listaCategorias);
-                break;
             } else if (opcao == 2){
                 categoria = escolherCategoria(listaCategorias);// pede pro usuario escolher a categoria
                 if (categoria != NULL) {
@@ -280,7 +279,6 @@ void menuPrincipal(NoCategoria* listaCategorias) {
                 } else {
                     printf("Categoria inválida!\n");
                 }
-                break;
             } else if (opcao == 3) {
                 categoria = escolherCategoria(listaCategorias); 
                 if (categoria != NULL) {
@@ -288,7 +286,6 @@ void menuPrincipal(NoCategoria* listaCategorias) {
                 } else {
                     printf("Categoria inválida!\n");
                 }
-                break;
             } else if (opcao == 4){
                 categoria = escolherCategoria(listaCategorias);
                 if (categoria != NULL) {
@@ -296,7 +293,6 @@ void menuPrincipal(NoCategoria* listaCategorias) {
                 } else {
                     printf("Categoria inválida!\n");
                 }
-                break;
             } else if (opcao == 5){
                 categoria = escolherCategoria(listaCategorias);
                 if (categoria != NULL) {
@@ -337,13 +333,10 @@ void menuPrincipal(NoCategoria* listaCategorias) {
                 } else {
                     printf("Categoria inválida!\n");
                 }
-                break;
             } else if (opcao == 7){
                 removerCategoriaMenu(&listaCategorias);
-                break;
             } else if (opcao == 8){
                 removerAlimentoMenu(listaCategorias);
-                break;
             }
         }
     
